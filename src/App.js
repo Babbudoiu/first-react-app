@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './App.css';
 
 const App = () => {
 
   const [data, setData] = useState("");
   const[error, setError] = useState({error: false, message:""});
-  
+  const [loading, setLoading] = useState(true);
 
-  const handleFetch = async () =>{
+  useEffect(() => {
+
+    // setTimeout(() => setLoading(false), 2000);
+    handleFetch();
+    
+  }, []);
+
+
+  const handleFetch = async () => {
 
     try{
       const response = await fetch("https://tronalddump.io/random/quote");
@@ -17,6 +25,7 @@ const App = () => {
       }
       const data = await response.json();
       setData(data);
+      setLoading(false);
       
     } catch (error) {
       setError({error: true, message: error.message})
@@ -30,7 +39,10 @@ const App = () => {
 
   if (error.error) {
     return <h1>An error has occured: {error.message}</h1>
-  }
+
+  } else if (loading) {
+    return <h1>Loading...</h1>
+  };
 
   return (
     <div>
